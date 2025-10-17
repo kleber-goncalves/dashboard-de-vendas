@@ -1,7 +1,7 @@
 import { createGlobalStyle } from 'styled-components'
-import type { DefaultTheme } from 'styled-components'
 
-export const GlobalStyle = createGlobalStyle<{ theme?: DefaultTheme }>`
+export const GlobalStyle = createGlobalStyle`
+
     body, html {
         background: ${(props) => props.theme.appBackground};
         color: ${(props) => props.theme.appColor};
@@ -12,5 +12,5 @@ export const GlobalStyle = createGlobalStyle<{ theme?: DefaultTheme }>`
     h1, h2, p, ul, li, figure{
         margin: 0;
         padding: 0;
-    }
+    } 
 `
