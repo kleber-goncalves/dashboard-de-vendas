@@ -1,1 +1,6 @@
 export * from './BannerImage'
+export * from './Logo'
+export * from './StyledInput'
+export * from './StyledButton'
+export * from './Typographies'
+export { default as FormComponent } from './FormComponent'

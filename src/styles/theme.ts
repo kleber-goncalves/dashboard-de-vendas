@@ -1,10 +1,10 @@
 import type { Theme } from '@/types'
 
-export const lighTheme: Theme = {
+export const lightTheme: Theme = {
     appBackground: '#FFF',
     appColor: '#000',
     appDefaultStroke: '#E0E0E0',
-    appLogo: 'dnc-logo-black.svg',
+    appLogo: 'dnc-logo-white.svg',
     appSkeletonFrom: '#EEE',
     appSkeletonTo: '#CCC',
     buttons: {
@@ -44,7 +44,7 @@ export const darkTheme: Theme = {
     appBackground: '#060B26',
     appColor: '#FFF',
     appDefaultStroke: '#21497D',
-    appLogo: 'dnc-logo-white.svg',
+    appLogo: 'dnc-logo-black.svg',
     appSkeletonFrom: '#060b26',
     appSkeletonTo: '#21407D',
     buttons: {
