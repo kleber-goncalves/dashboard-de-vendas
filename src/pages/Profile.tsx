@@ -1,10 +1,21 @@
-import { Header } from '@/components'
+import { CardComponent, Header, StyledButton } from '@/components'
+import { useContext } from 'react'
+import { AppThemeContext } from '@/contexts/appthemeContext'
 
 function Profile() {
+    const themeContext = useContext(AppThemeContext)
     return (
         <>
             <Header />
-            <h1>Profile</h1>
+            <CardComponent>
+                <StyledButton
+                    className="primary"
+                    onClick={themeContext?.toggleTheme}
+                >
+                    Trocar para tema{' '}
+                    {themeContext?.appTheme === 'light' ? 'escuro' : 'claro'}
+                </StyledButton>
+            </CardComponent>
         </>
     )
 }
