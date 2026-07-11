@@ -1,3 +1,4 @@
+import { pxToRem } from '@/utils'
 import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
@@ -13,4 +14,12 @@ export const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
     } 
+
+    .mb-1 {
+        margin-bottom: ${pxToRem(16)};
+    }
+
+    .mb-2 {
+        margin-bottom: ${pxToRem(32)};
+    }
 `
