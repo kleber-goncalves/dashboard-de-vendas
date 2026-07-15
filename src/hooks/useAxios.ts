@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react'
-
 import axios, { type AxiosRequestConfig } from 'axios'
 import Cookies from 'js-cookie'
 
@@ -46,7 +45,6 @@ export const usePost = <T, P>(endpoint: string) => {
     }
 }
 
-
 export const useGet = <T>(endpoint: string, config?: AxiosRequestConfig) => {
     const [data, setData] = useState<T | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
@@ -62,7 +60,7 @@ export const useGet = <T>(endpoint: string, config?: AxiosRequestConfig) => {
                 url: endpoint,
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${Cookies.get('Authorization')}`,
+                    Authorization: `Bearer ${Cookies.get('Authorization')}`,
                     ...config?.headers,
                 },
                 ...config,
@@ -84,5 +82,79 @@ export const useGet = <T>(endpoint: string, config?: AxiosRequestConfig) => {
         loading,
         error,
         getData,
+    }
+}
+
+export const usePut = <T>(endpoint: string) => {
+    const [data, setData] = useState<T | null>(null)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [error, setError] = useState<string | null>(null)
+
+    const putData = async (putData: T, config?: AxiosRequestConfig) => {
+        setData(null)
+        setLoading(true)
+        setError(null)
+
+        try {
+            const response = await axiosInstance({
+                url: endpoint,
+                method: 'PUT',
+                data: putData,
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('Authorization')}`,
+                    'Content-Type': 'application/json',
+                    ...config?.headers,
+                },
+                ...config,
+            })
+            setData(response.data)
+        } catch (error: any) {
+            setError(error.response.status ?? 500)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    return {
+        data,
+        loading,
+        error,
+        putData,
+    }
+}
+
+export const useDelete = <T>(endpoint: string) => {
+    const [data, setData] = useState<T | null>(null)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [error, setError] = useState<string | null>(null)
+
+    const deleteData = async (config?: AxiosRequestConfig) => {
+        setData(null)
+        setLoading(true)
+        setError(null)
+
+        try {
+            const response = await axiosInstance({
+                url: endpoint,
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('Authorization')}`,
+                    ...config?.headers,
+                },
+                ...config,
+            })
+            setData(response.data)
+        } catch (error: any) {
+            setError(error.response.status ?? 500)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    return {
+        data,
+        loading,
+        error,
+        deleteData,
     }
 }
