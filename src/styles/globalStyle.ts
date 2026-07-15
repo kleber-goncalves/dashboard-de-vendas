@@ -44,3 +44,5 @@ export const GlobalStyle = createGlobalStyle`
         min-height: ${pxToRem(400)};
     }
     `
+
+

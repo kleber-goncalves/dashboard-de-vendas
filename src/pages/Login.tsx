@@ -1,10 +1,12 @@
 import { type ChangeEvent, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {jwtDecode} from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import Cookies from 'js-cookie'
 
 // Components
 import { Box, Button, Container, Grid } from '@mui/material'
+import Alert from '@mui/material/Alert'
+
 import {
     BannerImage,
     FormComponent,
@@ -41,7 +43,7 @@ function Login() {
             case '401':
                 return { msg: 'Email e/ou senha inválidos', type: 'error' }
             default:
-                return { msg: 'Erro na requisição', type: 'error' }
+                return { msg: 'API não disponivel, clique no botão HOME para acessar sem login', type: 'error' }
         }
     }
 
@@ -60,7 +62,6 @@ function Login() {
                 expires: jwtExpirationDateConverter(decode.exp),
                 secure: true,
             })
-            
         }
         if (Cookies.get('Authorization')) {
             navigate('/home')
@@ -79,8 +80,24 @@ function Login() {
                             alignItems: 'center',
                             display: 'flex',
                             height: '100vh',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
                         }}
                     >
+                        <Alert
+                            style={{
+                                width: '40%',
+                                height: 'fit-content',
+                                top: '5%',
+                                position: 'absolute',
+                            }}
+
+                            severity="warning"
+                        >
+                            API não disponível no momento, estamos usando dados
+                            simulados. Clique no botão HOME
+                            para acessar sem login
+                        </Alert>
                         <Container maxWidth="sm">
                             <Box
                                 sx={{

@@ -356,10 +356,11 @@ function Home() {
                                                     (news) => [
                                                         <a
                                                             key={`${news.title}-link`}
-                                                            className="ellipsis ellipsis-sm"
+                                                            className="ellipsis ellipsis-sm  professional-tooltip"
                                                             href={news.link}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
+
                                                         >
                                                             {news.title}
                                                         </a>,
