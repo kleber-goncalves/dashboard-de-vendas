@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, type ChangeEvent, useEffect, useState } from 'react'
 import { AppThemeContext } from '@/contexts/appthemeContext'
@@ -14,7 +15,7 @@ import {
 import { Container, Grid } from '@mui/material'
 
 // HOOKS
-import { useFormValidation, useGet, usePost, useDelete, usePut } from '@/hooks'
+import { useFormValidation, useGet, useDelete, usePut } from '@/hooks'
 
 // SERVICES
 import { logout } from '@/services'
@@ -31,10 +32,11 @@ function Profile() {
     const themeContext = useContext(AppThemeContext)
 
     // HOOKs
-    const { updateMessage, setUpdateMessage } = useState<MessageProps>({
+    const [updateMessage, setUpdateMessage] = useState<MessageProps>({
         type: 'success',
         msg: '',
     })
+    
     const clearMessage = () => {
         setTimeout(() => {
             setUpdateMessage({
