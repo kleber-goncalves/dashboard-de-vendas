@@ -43,6 +43,15 @@ export const GlobalStyle = createGlobalStyle`
     .skeleton-loading-mh-2 {
         min-height: ${pxToRem(400)};
     }
+
+   .hover {
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+        &:hover {
+            background-color: ${(props) => props.theme.appSkeletonTo};
+        }
+    }
+
     `
 
 

@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { Link } from 'react-router-dom'
+
 // COMPONENTS
 import {
     AvatarsList,
@@ -222,7 +225,7 @@ function Home() {
                         </Grid>
 
                         {/* Cartão 3: Leads contactados */}
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={4} >
                             <CardComponent
                                 className={
                                     highlightsLoading
@@ -234,7 +237,7 @@ function Home() {
                                     <div className="skeleton-placeholder" />
                                 ) : (
                                     dataToRender?.[2] && (
-                                        <>
+                                        <Link to="/leads">
                                             <StyledH2 className="mb-1">
                                                 Leads contactados
                                             </StyledH2>
@@ -251,7 +254,7 @@ function Home() {
                                             <StyledSpan className="mb-1">
                                                 {dataToRender[2].subtitle}
                                             </StyledSpan>
-                                        </>
+                                        </Link>
                                     )
                                 )}
                             </CardComponent>
@@ -360,7 +363,6 @@ function Home() {
                                                             href={news.link}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-
                                                         >
                                                             {news.title}
                                                         </a>,
