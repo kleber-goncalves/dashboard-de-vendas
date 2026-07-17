@@ -15,7 +15,16 @@ import {
 import { Container, Grid } from '@mui/material'
 
 // HOOKS
-import { useFormValidation, useGet, useDelete, usePut } from '@/hooks'
+import {
+    useFormValidation,
+    useGet,
+    useDelete,
+    usePut,
+    useMockStorage,
+} from '@/hooks'
+
+// DATAs
+import { defaultUser } from '@/data'
 
 // SERVICES
 import { logout } from '@/services'
@@ -29,6 +38,11 @@ import type {
 } from '@/types'
 
 function Profile() {
+    const [profileMockData, setProfileMockData] = useMockStorage(
+        'user_profile_v2',
+        defaultUser
+    )
+
     const themeContext = useContext(AppThemeContext)
 
     // HOOKs
@@ -36,7 +50,7 @@ function Profile() {
         type: 'success',
         msg: '',
     })
-    
+
     const clearMessage = () => {
         setTimeout(() => {
             setUpdateMessage({
@@ -45,6 +59,8 @@ function Profile() {
             })
         }, 3000)
     }
+
+    // HOOKs da API
     const {
         data: profileData,
         loading: profileLoading,
@@ -58,20 +74,20 @@ function Profile() {
         error: profileUpdateError,
     } = usePut<ProfileEditableData>('profile/Update')
 
-    const {
-        deleteData: profileDeleteData,
-    } = useDelete('profile/Update')
-    
-    useEffect(() => {
-        if (profileData) {
-            handleChange(0, profileData?.name || '')
-            handleChange(1, profileData?.email || '')
-            handleChange(2, profileData?.phone || '')
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [profileData])
+    const { deleteData: profileDeleteData } = useDelete('profile/delete')
 
-    // FORM VALIDATION
+    const hasValidProfileApiData =
+        !profileLoading &&
+        profileData &&
+        typeof profileData === 'object' &&
+        profileData.name !== undefined &&
+        profileData.name !== ''
+
+    const currentProfile = hasValidProfileApiData
+        ? profileData
+        : profileMockData
+
+    // FORM VALIDATION - Configuração dos Inputs
     const inputs: InputProps[] = [
         {
             name: 'name',
@@ -93,42 +109,77 @@ function Profile() {
         },
     ]
 
-    const { formValues, handleChange, formValid } = useFormValidation(inputs)
+    const { formValues, handleChange, formValid } = useFormValidation(
+        inputs,
+        currentProfile
+    )
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        await profilePutData({
-            name: String(formValues[0]),
-            phone: String(formValues[2]),
+
+        const updatedName = String(formValues[0])
+        const currentEmail = String(formValues[1])
+        const updatedPhone = String(formValues[2])
+
+        setProfileMockData({
+            name: updatedName,
+            email: currentEmail,
+            phone: updatedPhone,
         })
+
+        window.dispatchEvent(new Event('profileUpdated'))
+
+        setUpdateMessage({
+            type: 'success',
+            msg: 'Perfil atualizado com sucesso!',
+        })
+        clearMessage()
+
+        try {
+            await profilePutData({
+                name: updatedName,
+                phone: updatedPhone,
+            })
+        } catch (error) {
+            console.warn(
+                '⚠️ API offline. Perfil mantido no armazenamento local.'
+            )
+
+            setUpdateMessage({
+                type: 'error',
+                msg: 'Perfil salvo no computador, mas a API está indisponível!',
+            })
+            clearMessage()
+        }
     }
 
     const handleDelete = async () => {
-        confirm('Tem certeza que deseja excluir sua conta?')
+        if (!window.confirm('Tem certeza que deseja excluir sua conta?')) return
         try {
             await profileDeleteData()
-            alert('Conta excluida com sucesso')
-            Cookies.remove('Authorization')
-            window.location.href = '/'
         } catch (error) {
-            alert('Erro ao excluir conta')
+            console.warn('⚠️ API offline. Removendo conta localmente.')
         }
+
+        alert('Conta excluída com sucesso')
+
+        localStorage.removeItem('user_profile')
+        localStorage.removeItem('token')
+        Cookies.remove('Authorization')
+
+        window.location.href = '/'
     }
 
     useEffect(() => {
-        if (profileUpdateData !== null) {
+        if (profileUpdateData !== null && profileUpdateData !== undefined) {
             setUpdateMessage({
                 type: 'success',
-                msg: 'Perfil atualizado com sucesso',
+                msg: 'Perfil atualizado na nuvem com sucesso!',
             })
-        } else if (profileUpdateError) {
-            setUpdateMessage({
-                type: 'error',
-                msg: 'API indisponivel tente novamente mais tarde',
-            })
+            clearMessage()
         }
-        clearMessage()
-    }, [profileUpdateError, profileUpdateData])
+
+    }, [profileUpdateData])
 
     return (
         <>
@@ -150,6 +201,10 @@ function Profile() {
                                             Seus dados
                                         </StyledH2>
                                         <FormComponent
+                                            key={
+                                                currentProfile?.name ||
+                                                'loading'
+                                            }
                                             inputs={inputs.map(
                                                 (input, index) => ({
                                                     ...input,

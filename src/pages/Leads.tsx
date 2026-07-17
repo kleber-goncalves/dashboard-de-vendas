@@ -14,8 +14,17 @@ import {
 } from '@/components'
 import { Container, Grid } from '@mui/material'
 
+// DATAs
+import { leadsDataMock } from '@/data'
+
 // HOOKS
-import { useFormValidation, useGet, usePost, useDelete } from '@/hooks'
+import {
+    useFormValidation,
+    useGet,
+    usePost,
+    useDelete,
+    useMockStorage,
+} from '@/hooks'
 
 //TYPES
 import type { AxiosRequestConfig } from 'axios'
@@ -27,6 +36,11 @@ import type {
 } from '@/types'
 
 function Leads() {
+    const [mockLeads, setMockLeads] = useMockStorage(
+        'leads_data',
+        leadsDataMock
+    )
+
     // HOOKs
     const {
         data: createLeadsData,
@@ -71,22 +85,53 @@ function Leads() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        await createLeadsPostData({
-            name: String(formValues[0]),
-            email: String(formValues[1]),
-            phone: String(formValues[2]),
+
+        const newLeadName = String(formValues[0])
+        const newLeadEmail = String(formValues[1])
+        const newLeadPhone = String(formValues[2])
+
+        const newLead: LeadsData = {
+            id: Date.now(),
+            name: newLeadName,
+            email: newLeadEmail,
+            phone: newLeadPhone,
+        }
+
+        try {
+            await createLeadsPostData({
+                name: newLeadName,
+                email: newLeadEmail,
+                phone: newLeadPhone,
+            })
+        } catch (error) {
+            console.warn(
+                '⚠️ API indisponível. Salvando lead localmente no localStorage.'
+            )
+        }
+
+        const updatedLeadsList = [newLead, ...mockLeads]
+        setMockLeads(updatedLeadsList)
+
+        setCreateMessage({
+            type: 'success',
+            msg: 'Lead cadastrado com sucesso (Modo Local)',
         })
+
+        clearMessage()
     }
 
     const handleDelete = async (id: number) => {
-        confirm('Tem certeza que deseja excluir seu lead?')
+        if (!window.confirm('Tem certeza que deseja excluir seu lead?')) return
         try {
             await leadsDeleteData({ params: { id: id } })
-            alert('Lead excluida com sucesso')
-            getLeads()
         } catch (error) {
-            alert('Erro ao excluir seu lead')
+            console.warn(
+                '⚠️ API indisponível para exclusão. Removendo lead localmente.'
+            )
         }
+        const filteredLeads = mockLeads.filter((lead) => lead.id !== id)
+        setMockLeads(filteredLeads)
+        alert('Lead removida localmente (Modo de Teste)')
     }
 
     const [createMessage, setCreateMessage] = useState<MessageProps>({
@@ -105,27 +150,15 @@ function Leads() {
 
     useEffect(() => {
         if (createLeadsData?.id) {
-            setCreateMessage({
-                type: 'success',
-                msg: 'Lead atualizado com sucesso',
-            })
             getLeads()
-            clearMessage()
-        } else if (createLeadsError) {
-            setCreateMessage({
-                type: 'error',
-                msg: 'API indisponivel tente novamente mais tarde',
-            })
-            clearMessage()
-        } else {
-            clearMessage()
         }
-    }, [createLeadsError, createLeadsData])
+    }, [createLeadsData])
 
     const hasValidLeads =
         !leadsLoading && Array.isArray(leadsData) && leadsData.length > 0
 
-    const leadsToRender = hasValidLeads ? leadsData : []
+    const leadsToRender: LeadsData[] =
+        hasValidLeads && leadsData ? leadsData : mockLeads
 
     return (
         <>
@@ -158,7 +191,6 @@ function Leads() {
                                             rows={leadsToRender.map((lead) => [
                                                 <StyledP
                                                     key={`${lead.id}-name`}
-                                                    className="ellipsis ellipsis-xs"
                                                 >
                                                     {lead.name}
                                                 </StyledP>,
