@@ -3,6 +3,7 @@ import { Theme } from '@/types'
 
 declare module 'styled-components' {
     export interface DefaultTheme extends Theme {
-        appBackground
+        appBackground : string
+        appLogo : string
     }
 }
