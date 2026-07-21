@@ -246,7 +246,6 @@ function Home() {
                                                 lineheight={40}
                                                 className="mb-1"
                                             >
-                                                {/* Mantido apenas o valor numérico puro ou fallback 0 */}
                                                 {Number(
                                                     dataToRender[2].value
                                                 ) || 0}

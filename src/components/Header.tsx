@@ -59,17 +59,37 @@ function Header() {
                         sx={{
                             alignItems: 'center',
                             display: 'flex',
-                            gap: pxToRem(9),
+                            gap: pxToRem(24),
                         }}
                     >
-                        <Link to="/perfil">
+                        <Link
+                            to="/leads"
+                            style={{
+                                textDecoration: 'none',
+                                color: 'inherit',
+                                display: 'flex',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <StyledH2>Leads</StyledH2>
+                        </Link>
+                        <Link
+                            to="/perfil"
+                            style={{
+                                textDecoration: 'none',
+                                color: 'inherit',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: pxToRem(9),
+                            }}
+                        >
                             <Avatar
                                 alt="DNC Avatar"
                                 src="/dnc-avatar.svg"
                                 sx={{ width: pxToRem(40), height: pxToRem(40) }}
                             />
+                            <StyledH2>Olá, {userData.name}</StyledH2>
                         </Link>
-                        <StyledH2>Olá, {userData.name}</StyledH2>
                     </Box>
                 </Box>
             </Container>
