@@ -45,14 +45,12 @@ function Leads() {
     const {
         data: createLeadsData,
         loading: createLeadsLoading,
-        error: createLeadsError,
         postData: createLeadsPostData,
     } = usePost<LeadsData, LeadsPostData>('leads/create', true)
 
     const {
         data: leadsData,
         loading: leadsLoading,
-        error: leadsError,
         getData: getLeads,
     } = useGet<LeadsData[]>('leads')
 

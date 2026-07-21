@@ -37,7 +37,7 @@ import { type RootState } from '@/redux'
 
 function Login() {
     const navigate = useNavigate()
-    const { email, message } = useSelector(
+    const { message } = useSelector(
         (state: RootState) => state.createProfile
     )
 

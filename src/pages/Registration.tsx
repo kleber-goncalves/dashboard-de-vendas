@@ -36,7 +36,6 @@ function Registration() {
             data,
             loading,
             error,
-            postData,
         } = usePost<string, CreateProfileData>('profile/create')
 
     // FORM STEP 1
