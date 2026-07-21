@@ -15,7 +15,11 @@ export default defineConfig([
       tseslint.configs.recommended,
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
-      eslintConfigPrettier
+      eslintConfigPrettier,
+    
+    ],
+    plugins: [
+      'cypress/recommended',
     ],
     languageOptions: {
       ecmaVersion: 2020,
